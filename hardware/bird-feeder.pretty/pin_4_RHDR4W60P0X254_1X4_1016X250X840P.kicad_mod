@@ -1,0 +1,243 @@
+(footprint "pin_4_RHDR4W60P0X254_1X4_1016X250X840P"
+	(version 20241229)
+	(generator "pcbnew")
+	(generator_version "9.0")
+	(layer "F.Cu")
+	(descr "DS1023-1*4S21")
+	(tags "Connector")
+	(property "Reference" "J**"
+		(at 0 0 0)
+		(layer "F.SilkS")
+		(uuid "3a7812b8-e940-4d1d-b2e3-77fd88f98c7e")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.254)
+			)
+		)
+	)
+	(property "Value" "pin_4_RHDR4W60P0X254_1X4_1016X250X840P"
+		(at 0 0 0)
+		(layer "F.SilkS")
+		(hide yes)
+		(uuid "e14ee985-e287-4332-9fb9-054b975a1c30")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.254)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "a598eb67-5e1f-448a-b1ce-6b3638c1a3e1")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "6d5933f7-d743-4f10-9189-298242b8cda5")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+		)
+	)
+	(attr through_hole)
+	(fp_line
+		(start -1.27 -1.25)
+		(end -1.27 0)
+		(stroke
+			(width 0.2)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "13dce11f-59e6-4a52-809a-0492a37be560")
+	)
+	(fp_line
+		(start 0 1.25)
+		(end 8.89 1.25)
+		(stroke
+			(width 0.2)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "bcebcae0-38b5-4bb0-acce-ce7b45282c8d")
+	)
+	(fp_line
+		(start 8.89 -1.25)
+		(end -1.27 -1.25)
+		(stroke
+			(width 0.2)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "81278fea-41aa-4feb-932d-69d42e18438b")
+	)
+	(fp_line
+		(start 8.89 1.25)
+		(end 8.89 -1.25)
+		(stroke
+			(width 0.2)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "e56b40db-8b71-44c9-aac6-cb95b5193d4f")
+	)
+	(fp_line
+		(start -1.52 -1.5)
+		(end 9.14 -1.5)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "0fbabebd-e4d0-4ba0-baee-1d9356eca23a")
+	)
+	(fp_line
+		(start -1.52 1.5)
+		(end -1.52 -1.5)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "aff39805-9b70-47f8-b69e-3e1cc1867633")
+	)
+	(fp_line
+		(start 9.14 -1.5)
+		(end 9.14 1.5)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "d587aac0-a7b7-425c-9e86-f2f2522017d6")
+	)
+	(fp_line
+		(start 9.14 1.5)
+		(end -1.52 1.5)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "2e4de18d-fe20-47b8-aa1d-773a05b0e499")
+	)
+	(fp_line
+		(start -1.27 -1.25)
+		(end 8.89 -1.25)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "8646c6b5-8c7e-4d96-b126-3e3c98fc3e00")
+	)
+	(fp_line
+		(start -1.27 1.25)
+		(end -1.27 -1.25)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "f46a097e-89c2-4457-a1cb-8967147a434d")
+	)
+	(fp_line
+		(start 8.89 -1.25)
+		(end 8.89 1.25)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "02c4c127-76cf-405b-bdb1-581fefae2a9b")
+	)
+	(fp_line
+		(start 8.89 1.25)
+		(end -1.27 1.25)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "09a00866-9de9-4b44-8e3a-ffca48687c94")
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0 0 0)
+		(layer "F.Fab")
+		(uuid "deeabefc-93e1-49e9-8b99-9c1e6d1aae3b")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.254)
+			)
+		)
+	)
+	(pad "1" thru_hole rect
+		(at 0 0)
+		(size 1.2 1.2)
+		(drill 0.8)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "5cd17224-bd0e-4b10-956d-466038bb139a")
+	)
+	(pad "2" thru_hole circle
+		(at 2.54 0)
+		(size 1.2 1.2)
+		(drill 0.8)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "9897058a-e4bf-49f8-a23c-1a31c1d25deb")
+	)
+	(pad "3" thru_hole circle
+		(at 5.08 0)
+		(size 1.2 1.2)
+		(drill 0.8)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "5e9e489b-97a7-416c-b198-af47fb15f52e")
+	)
+	(pad "4" thru_hole circle
+		(at 7.62 0)
+		(size 1.2 1.2)
+		(drill 0.8)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "b61a35dc-fc08-4cd3-a6de-298099cdc9ec")
+	)
+	(embedded_fonts no)
+	(model "DS1023-1_4S21.stp"
+		(hide yes)
+		(offset
+			(xyz 0 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz 0 0 0)
+		)
+	)
+	(model "C:/Users/eleme/Downloads/LIB_DS1023-1_4S21/DS1023-1_4S21/3D/DS1023-1_4S21.stp"
+		(offset
+			(xyz 0 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz 0 0 0)
+		)
+	)
+)
