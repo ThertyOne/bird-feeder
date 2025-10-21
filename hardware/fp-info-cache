@@ -1,4 +1,4 @@
-26445617682081804
+26449139835478802
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -105616,12 +105616,26 @@ MOSFET (N-Channel)
 3
 3
 bird-feeder
+I_SOT95P237X112-3N
+Micro3
+MOSFET (N-Channel)
+0
+3
+3
+bird-feeder
 LEDC2012X40N
 LS R976
 LED
 0
 2
 2
+bird-feeder
+LMC555_DIP794W53P254L959H508Q8N
+P (R-PDIP-T8)
+Integrated Circuit
+0
+8
+8
 bird-feeder
 MC34063A_SOIC127P600X175-8N
 so-8-
