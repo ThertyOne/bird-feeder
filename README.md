@@ -41,7 +41,7 @@ Po wykryciu ruchu przez czujnik ESP wychodzi z trybu **deep sleep**, włącza LE
 | ESP32-CAM       | Deep sleep                 | 0.1 – 0.2 |
 | ESP32-CAM       | Aktywne (Wi-Fi + foto)     | 180 – 250 |
 | Serwo           | Ruch                        | 150 – 200 |
-| LEDy WS2812     | Max 8 LED                   | 80 – 100 |
+| LEDy            | Max 4 LED                   | 80 – 100 |
 | Czujniki        | Idle                        | 2 – 5      |
 
 **Średni pobór prądu:** ~10–30 mA przy większości czasu w deep sleep.  
