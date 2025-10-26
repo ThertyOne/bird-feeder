@@ -64,13 +64,9 @@ Po wykryciu ruchu przez czujnik ESP wychodzi z trybu **deep sleep**, włącza LE
 - **2 panele szeregowo:** napięcie 12 V / prąd ~83 mA, dalej prostownik i TP4056
 - **Przetwornica boost 5 V:** sprawność ~85 % → prąd pobierany z akumulatora = Iout × 5 V / (η × 3,7 V)
 - **Szacowany średni pobór prądu ESP32 + peryferia:** 50 mA @ 5 V  
-  $$
-  I_{bat} \approx \frac{5V \cdot 0.05A}{0.85 \cdot 3.7V} \approx 79,5\, mA
-  $$
+  I_bat ≈ (5V * 0.05A) / (0.85 * 3.7V) ≈ 79,5 mA
 - **Czas pracy na baterii bez słońca:**  
-  $$
-  t \approx \frac{2200 mAh}{79,5 mA} \approx 27,7 h \approx 1,15 dnia
-  $$
+  Czas pracy na baterii ≈ 2200 mAh / 79,5 mA ≈ 27,7 h ≈ 1,15 dnia
 - **Chwilowe piki prądu** (serwo + LED + Wi-Fi): ~500 mA @ 5 V → Ibat_peak ≈ 800 mA  
 - **Przy słonecznej pogodzie** panele mogą praktycznie utrzymać akumulator w pełnym stanie, a nawet doładować go na zapas (np. 4–5 h słońca → ~4 Wh energii)
 
