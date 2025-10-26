@@ -1,0 +1,24 @@
+* IRLML2502 N-Channel Power MOSFET
+* =================================
+* Model based on IR datasheet (20V, 4.2A, Rds(on)=45mΩ typ.)
+
+.MODEL IRLML2502 NMOS
++ VTO = 0.8
++ KP = 20
++ LAMBDA = 0.02
++ RD = 0.05
++ RS = 0.05
++ CGS = 7.4E-10
++ CGD = 9.0E-11
++ IS = 1E-12
++ PB = 0.8
++ CBD = 9.0E-11
++ TOX = 1E-7
++ NSUB = 1E17
++ UO = 400
+* + RDS = 0.045
+* + VMAX = 1E5
+* + BVDSS = 20
+* + IBV = 1E-6
++ KF = 1E-25
++ AF = 1.0
