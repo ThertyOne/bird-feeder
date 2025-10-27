@@ -1,6 +1,6 @@
 LTspice 24.1.10 for Windows
 Circuit: C:\Users\eleme\Desktop\karmnik\bird-feeder\sym\sym_pradnica.net
-Start Time: Sun Oct 26 21:46:56 2025
+Start Time: Mon Oct 27 16:34:00 2025
 C:\Users\eleme\Desktop\karmnik\bird-feeder\sym\IRLML2502.txt(10): Ignoring unknown model parameter. This may or may not be a problem.
 + RS = 0.05
 + CGS = 7.4E-10
@@ -34,9 +34,7 @@ Gmin = 2.70769e-13
 Gmin = 0
 Gmin stepping succeeded in finding the operating point.
 
-
-Simulation stopped by user.
-Total elapsed time: 4.079 seconds.
+Total elapsed time: 0.471 seconds.
 
 Files loaded:
 C:\Users\eleme\Desktop\karmnik\bird-feeder\sym\sym_pradnica.net
