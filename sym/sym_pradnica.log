@@ -1,16 +1,12 @@
-LTspice 24.1.10 for Windows
-Circuit: C:\Users\eleme\Desktop\karmnik\bird-feeder\sym\sym_pradnica.net
-Start Time: Mon Oct 27 16:34:00 2025
-C:\Users\eleme\Desktop\karmnik\bird-feeder\sym\IRLML2502.txt(10): Ignoring unknown model parameter. This may or may not be a problem.
-+ RS = 0.05
-+ CGS = 7.4E-10
-           ^^^^^^^^^^^^^^^^
-C:\Users\eleme\Desktop\karmnik\bird-feeder\sym\IRLML2502.txt(11): Ignoring unknown model parameter. This may or may not be a problem.
-+ CGS = 7.4E-10
-+ CGD = 9.0E-11
-               ^^^^^^^^^^^^^^^^
+LTspice 24.1.9 for Windows
+Circuit: C:\Users\eleme\Desktop\bird-feeder\sym\sym_pradnica.net
+Start Time: Mon Oct 27 19:32:31 2025
+C:\Users\eleme\Desktop\bird-feeder\sym\IRLML2502.txt(10): Ignoring unknown model parameter. This may or may not be a problem.
++ RS = 0.05###> + CGS = 7.4E-10<###
+C:\Users\eleme\Desktop\bird-feeder\sym\IRLML2502.txt(11): Ignoring unknown model parameter. This may or may not be a problem.
++ CGS = 7.4E-10###> + CGD = 9.0E-11<###
 solver = Normal
-Maximum thread count: 16
+Maximum thread count: 8
 tnom = 27
 temp = 27
 method = trap
@@ -34,13 +30,13 @@ Gmin = 2.70769e-13
 Gmin = 0
 Gmin stepping succeeded in finding the operating point.
 
-Total elapsed time: 0.471 seconds.
+Total elapsed time: 1045.879 seconds.
 
 Files loaded:
-C:\Users\eleme\Desktop\karmnik\bird-feeder\sym\sym_pradnica.net
+C:\Users\eleme\Desktop\bird-feeder\sym\sym_pradnica.net
 C:\Users\eleme\AppData\Local\LTspice\lib\cmp\standard.dio
 C:\Users\eleme\AppData\Local\LTspice\lib\cmp\standard.mos
-C:\Users\eleme\Desktop\karmnik\bird-feeder\sym\SS34.txt
-C:\Users\eleme\Desktop\karmnik\bird-feeder\sym\IRLML2502.txt
+C:\Users\eleme\Desktop\bird-feeder\sym\SS34.txt
+C:\Users\eleme\Desktop\bird-feeder\sym\IRLML2502.txt
 C:\Users\eleme\AppData\Local\LTspice\lib\sub\NE555.sub
 
