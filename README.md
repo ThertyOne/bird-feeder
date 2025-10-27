@@ -1,4 +1,4 @@
-# 🐦 Solar Bird Feeder – Smart Camera Feeder Project
+# 🐦 Solar Bird Feeder
 
 ## 📘 Opis projektu
 Projekt to **autonomiczny karmnik dla ptaków z funkcją wykonywania zdjęć**, oparty na module **ESP32-CAM**, zasilany z akumulatora **Li-Po 3,7 V / 2200 mAh**, ładowanego przez ładowarkę **TP4056** z panelem solarnym **6 V / 1 W** (możliwość połączenia 2 paneli szeregowo).  
