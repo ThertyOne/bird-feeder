@@ -1,4 +1,4 @@
-25636280773222507
+25638042430133492
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -102685,6 +102685,13 @@ Integrated Circuit
 bird-feeder
 MC34063A_SOIC127P600X175-8N
 so-8-
+Integrated Circuit
+0
+8
+8
+bird-feeder
+NE555_SOIC127P600X175-8N
+D0008A
 Integrated Circuit
 0
 8
