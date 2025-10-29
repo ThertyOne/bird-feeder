@@ -1,0 +1,48 @@
+LTspice 24.1.10 for Windows
+Circuit: C:\Users\eleme\Desktop\karmnik\bird-feeder\sym\sym_pradnica.net
+Start Time: Mon Oct 27 18:27:38 2025
+C:\Users\eleme\Desktop\karmnik\bird-feeder\sym\IRLML2502.txt(10): Ignoring unknown model parameter. This may or may not be a problem.
++ RS = 0.05
++ CGS = 7.4E-10
+           ^^^^^^^^^^^^^^^^
+C:\Users\eleme\Desktop\karmnik\bird-feeder\sym\IRLML2502.txt(11): Ignoring unknown model parameter. This may or may not be a problem.
++ CGS = 7.4E-10
++ CGD = 9.0E-11
+               ^^^^^^^^^^^^^^^^
+solver = Normal
+Maximum thread count: 16
+tnom = 27
+temp = 27
+method = trap
+Direct Newton iteration failed to find .op point.  (Use ".option noopiter" to skip.)
+Starting Gmin stepping
+Gmin = 10
+Gmin = 1.07374
+Gmin = 0.115292
+Gmin = 0.0123794
+Gmin = 0.00132923
+Gmin = 0.000142725
+Gmin = 1.5325e-05
+Gmin = 1.6455e-06
+Gmin = 1.76685e-07
+Gmin = 1.89714e-08
+Gmin = 2.03704e-09
+Gmin = 2.18725e-10
+Gmin = 2.34854e-11
+Gmin = 2.52173e-12
+Gmin = 2.70769e-13
+Gmin = 0
+Gmin stepping succeeded in finding the operating point.
+
+
+Simulation stopped by user.
+Total elapsed time: 46.154 seconds.
+
+Files loaded:
+C:\Users\eleme\Desktop\karmnik\bird-feeder\sym\sym_pradnica.net
+C:\Users\eleme\AppData\Local\LTspice\lib\cmp\standard.dio
+C:\Users\eleme\AppData\Local\LTspice\lib\cmp\standard.mos
+C:\Users\eleme\Desktop\karmnik\bird-feeder\sym\SS34.txt
+C:\Users\eleme\Desktop\karmnik\bird-feeder\sym\IRLML2502.txt
+C:\Users\eleme\AppData\Local\LTspice\lib\sub\NE555.sub
+
