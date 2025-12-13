@@ -8,6 +8,7 @@
 	(property "Reference" "IC**"
 		(at 0 0 0)
 		(layer "F.SilkS")
+		(hide yes)
 		(uuid "92f05614-3c6d-4dbb-a753-e52b5e048f83")
 		(effects
 			(font
@@ -163,20 +164,9 @@
 		(layer "F.Fab")
 		(uuid "94993691-c8d8-41d1-8fb5-5862f42197cc")
 	)
-	(fp_text user "${REFERENCE}"
-		(at 0 0 0)
-		(layer "F.Fab")
-		(uuid "7a9df54e-808c-4a05-8753-add5107c8611")
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.254)
-			)
-		)
-	)
 	(pad "1" thru_hole rect
 		(at -3.97 -3.81)
-		(size 1.13 1.13)
+		(size 1.4 1.4)
 		(drill 0.73)
 		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
@@ -184,7 +174,7 @@
 	)
 	(pad "2" thru_hole circle
 		(at -3.97 -1.27)
-		(size 1.13 1.13)
+		(size 1.4 1.4)
 		(drill 0.73)
 		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
@@ -192,7 +182,7 @@
 	)
 	(pad "3" thru_hole circle
 		(at -3.97 1.27)
-		(size 1.13 1.13)
+		(size 1.4 1.4)
 		(drill 0.73)
 		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
@@ -200,31 +190,31 @@
 	)
 	(pad "4" thru_hole circle
 		(at -3.97 3.81)
-		(size 1.13 1.13)
+		(size 1.4 1.4)
 		(drill 0.73)
 		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
 		(uuid "66fb1972-9249-4798-ac62-a41968a3c11e")
 	)
-	(pad "5" thru_hole circle
-		(at 3.97 3.81)
-		(size 1.13 1.13)
-		(drill 0.73)
-		(layers "*.Cu" "*.Mask")
-		(remove_unused_layers no)
-		(uuid "b86f73b0-5c1c-4a2f-abcc-84c9a2c1761b")
-	)
-	(pad "6" thru_hole circle
+	(pad "4" thru_hole circle
 		(at 3.97 1.27)
-		(size 1.13 1.13)
+		(size 1.4 1.4)
 		(drill 0.73)
 		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
 		(uuid "464b3c2d-ed1a-464d-bf1d-19f9f7d24fd0")
 	)
+	(pad "5" thru_hole circle
+		(at 3.97 3.81)
+		(size 1.4 1.4)
+		(drill 0.73)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "b86f73b0-5c1c-4a2f-abcc-84c9a2c1761b")
+	)
 	(pad "7" thru_hole circle
 		(at 3.97 -1.27)
-		(size 1.13 1.13)
+		(size 1.4 1.4)
 		(drill 0.73)
 		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
@@ -232,7 +222,7 @@
 	)
 	(pad "8" thru_hole circle
 		(at 3.97 -3.81)
-		(size 1.13 1.13)
+		(size 1.4 1.4)
 		(drill 0.73)
 		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)

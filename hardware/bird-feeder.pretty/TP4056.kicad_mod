@@ -160,7 +160,7 @@
 		(at -1.7 19.3)
 		(size 2.5 2.5)
 		(layers "F.Cu" "F.Mask" "F.Paste")
-		(roundrect_rratio 0.15)
+		(roundrect_rratio 0.18)
 		(thermal_bridge_angle 45)
 		(uuid "f6d88b37-cba4-4673-8d4a-6d006e3f11e3")
 	)

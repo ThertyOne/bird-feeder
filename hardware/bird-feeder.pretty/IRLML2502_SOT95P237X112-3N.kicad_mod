@@ -8,6 +8,7 @@
 	(property "Reference" "Q**"
 		(at 0 0 0)
 		(layer "F.SilkS")
+		(hide yes)
 		(uuid "9c705f29-7307-45de-a66d-d72968a76717")
 		(effects
 			(font
@@ -192,17 +193,6 @@
 		)
 		(layer "F.Fab")
 		(uuid "0d0b8f05-e8e5-410e-977c-40194d405cbc")
-	)
-	(fp_text user "${REFERENCE}"
-		(at 0 0 0)
-		(layer "F.Fab")
-		(uuid "dc0090a1-9fdd-441f-a40b-180b4b74a096")
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.254)
-			)
-		)
 	)
 	(pad "1" smd rect
 		(at -1.05 -0.95 90)

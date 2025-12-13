@@ -1,0 +1,38 @@
+Reference;Qty;Value;DNP;Exclude from BOM;Exclude from Board;Footprint;Datasheet
+C1,C2,C9,C12;4;1 n;;;;Capacitor_SMD:C_0603_1608Metric;~
+C3,C4;2;10 μ;;;;Capacitor_SMD:C_0603_1608Metric;~
+C5,C6;2;100 μ;;;;Capacitor_SMD:C_0603_1608Metric;~
+C7,C13;2;1 μ;;;;Capacitor_SMD:C_0603_1608Metric;~
+C8,C11;2;4700 μ;;;;bird-feeder:electrolytic_CAPPRD500W65D1000H2700;http://industrial.panasonic.com/cdbs/www-data/pdf/RDF0000/ABA0000C1209.pdf
+C10;1;10 μ;;;;Capacitor_THT:CP_Axial_L10.0mm_D4.5mm_P15.00mm_Horizontal;~
+C14;1;10 μ;;;;bird-feeder:CAPRB250W50L400T250H550;~
+D1,D3,D4,D5;4;SS34;;;;Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal;http://www.diodes.com/_files/datasheets/ds23022.pdf
+D2,D6;2;1N5818;;;;Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal;http://www.diodes.com/_files/datasheets/ds23022.pdf
+D7,D8;2;1N4148;;;;Diode_THT:D_DO-35_SOD27_P7.62mm_Horizontal;https://assets.nexperia.com/documents/data-sheet/1N4148_1N4448.pdf
+IC1,IC4;2;NE555;;;;bird-feeder:LMC555_DIP794W53P254L959H508Q8N;http://www.ti.com/lit/ml/mpdi001b/mpdi001b.pdf
+J1,J17;2;Li-Po battery;;;;bird-feeder:ARK raster 2,54 mm;~
+J2,J18;2;Screw_Terminal_01x02;;;;bird-feeder:ARK raster 2,54 mm;~
+J3,J6;2;5V_DC/DC;;;;bird-feeder:pin_2_RHDR4W60P0X254_1X4_1016X250X840P_1;https://www.tme.eu/Document/951e887d7e645db1a4e49e0834499c9b/zl262-sg.pdf
+J4,J7,J15,J16;4;Solar panel;;;;bird-feeder:ARK raster 2,54 mm;~
+J5,J12;2;servo;;;;bird-feeder:pin_4_RHDR4W60P0X254_1X4_1016X250X840P;https://www.tme.eu/Document/951e887d7e645db1a4e49e0834499c9b/zl262-sg.pdf
+J8,J14;2;ultrasonic;;;;bird-feeder:pin_4_RHDR4W60P0X254_1X4_1016X250X840P;https://www.tme.eu/Document/951e887d7e645db1a4e49e0834499c9b/zl262-sg.pdf
+J9,J13;2;UART;;;;bird-feeder:pin_4_RHDR4W60P0X254_1X4_1016X250X840P;https://www.tme.eu/Document/951e887d7e645db1a4e49e0834499c9b/zl262-sg.pdf
+J10,J11;2;pin_2;;;;bird-feeder:pin_2_RHDR4W60P0X254_1X4_1016X250X840P_1;https://www.tme.eu/Document/951e887d7e645db1a4e49e0834499c9b/zl262-sg.pdf
+J19;1;ESP;;;;bird-feeder:ARK raster 2,54 mm;~
+L1,L2;2;ETQP4M150KFN;;;;bird-feeder:DE1207;
+LED1,LED2;2;5 V;;;;bird-feeder:LEDC2012X40N;
+Q1,Q2;2;IRLML2502TRPBF;;;;bird-feeder:IRL_SOT95P237X112-3N;
+Q3,Q4;2;IRF740;;;;Library:IRF740;
+R1;1;9 k;;;;Resistor_SMD:R_0603_1608Metric;~
+R2;1;20 k;;;;Resistor_SMD:R_0603_1608Metric;~
+R3,R6,R15,R16;4;470;;;;Resistor_SMD:R_0603_1608Metric;~
+R4,R14;2;20k;;;;Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P5.08mm_Horizontal;~
+R5,R13,R20;3;10k;;;;Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P5.08mm_Horizontal;~
+R7,R9,R10,R11;4;100k;;;;Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P5.08mm_Horizontal;~
+R8;1;100k;;;;Resistor_SMD:R_0603_1608Metric;~
+R12,R19;2;100;;;;Resistor_SMD:R_0603_1608Metric;~
+R17;1;15 k;;;;Resistor_SMD:R_0603_1608Metric;~
+R18;1;1 k;;;;Resistor_SMD:R_0603_1608Metric;~
+U1,U4;2;TP4056;;;;bird-feeder:TP4056;
+U2,U3;2;ESP32-CAM;;;;Library:ESP32-CAM;
+Z1,Z2;2;1SMB5918BT3G;;;;bird-feeder:zenner_DIOM5436X247N;https://www.onsemi.com/pub/Collateral/1SMB5913BT3-D.PDF

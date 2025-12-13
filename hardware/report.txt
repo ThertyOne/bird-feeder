@@ -1,0 +1,4 @@
+Plotted to 'C:\Users\mrvan\OneDrive\Pulpit\plytka do roboty\hardware-B_Cu.gbr'.
+Created Gerber job file 'C:\Users\mrvan\OneDrive\Pulpit\plytka do roboty\hardware-job.gbrjob'.
+Informacja: Done.
+Informacja: Done.
