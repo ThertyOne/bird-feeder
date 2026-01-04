@@ -1,0 +1,129 @@
+(footprint "cewka_DE1207"
+	(version 20241229)
+	(generator "pcbnew")
+	(generator_version "9.0")
+	(layer "F.Cu")
+	(property "Reference" "REF**"
+		(at 0 -7.905 0)
+		(layer "F.SilkS")
+		(uuid "0e3c0ae0-1779-4fe2-a620-09fb18200a27")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "cewka_DE1207"
+		(at 0 7.635 0)
+		(layer "F.Fab")
+		(uuid "e6168d0f-2813-48a8-9d63-a7666908c02a")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "9afdff83-a2de-4a3b-89b1-9528f6bc866b")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "05d9ad1d-f15c-410f-b760-5b806f0b051b")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+		)
+	)
+	(attr smd)
+	(fp_line
+		(start -6 -6)
+		(end -6 6)
+		(stroke
+			(width 0.000128)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "d24f0ba0-91f4-4d34-9000-0bbed5cfffce")
+	)
+	(fp_line
+		(start -6 6)
+		(end 6 6)
+		(stroke
+			(width 0.000128)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "f8f808d3-2907-49a1-b550-189207d2838c")
+	)
+	(fp_line
+		(start 0 -6)
+		(end -6 -6)
+		(stroke
+			(width 0.000128)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "d330d835-a954-46a9-8312-6301bc435f5d")
+	)
+	(fp_line
+		(start 6 -6)
+		(end 0 -6)
+		(stroke
+			(width 0.000128)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "362b7dd4-508e-4c04-adde-e2488abd373d")
+	)
+	(fp_line
+		(start 6 6)
+		(end 6 -6)
+		(stroke
+			(width 0.000128)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "8257d9f9-449d-4d38-aa6d-74d32029047c")
+	)
+	(pad "1" smd rect
+		(at -4.95 0)
+		(size 2.9 5.4)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(solder_mask_margin 0.102)
+		(uuid "3c4d76c6-ad17-41b6-8780-52c87c8134b6")
+	)
+	(pad "2" smd rect
+		(at 4.95 0)
+		(size 2.9 5.4)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(solder_mask_margin 0.102)
+		(uuid "4c62a4d9-cb25-4818-a72a-b0c60c4a5b07")
+	)
+	(embedded_fonts no)
+	(model "C:/Users/eleme/Desktop/karmnik/bird-feeder/hardware_v2/libs/cewka_B82477G4472M000.STEP"
+		(offset
+			(xyz 0 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz -90 -0 -0)
+		)
+	)
+)
