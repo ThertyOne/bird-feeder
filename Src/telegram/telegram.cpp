@@ -67,11 +67,11 @@ bool TelegramManager::sendPhoto(uint8_t* jpgBuffer, size_t jpgSize) {
     
     String response = sendPhotoViaTelegram(jpgBuffer, jpgSize);
     
-    if (response.length() > 0 && response.indexOf("ok") > 0) {
-        Serial.println("[TELEGRAM] ✓ Photo sent!");
+    if (response.length() > 0 && response.indexOf("\"ok\":true") >= 0) {
+        Serial.println("[TELEGRAM] Photo sent!");
         return true;
     } else {
-        Serial.println("[TELEGRAM] ✗ Failed to send photo");
+        Serial.println("[TELEGRAM] Failed to send photo");
         Serial.println(response);
         return false;
     }

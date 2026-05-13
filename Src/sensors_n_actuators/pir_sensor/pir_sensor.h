@@ -4,7 +4,7 @@
 #define PIR_SENSOR_H
 
 #include <Arduino.h>
-#include "../config.h"
+#include "config.h"
 
 class PIRSensor {
 private:

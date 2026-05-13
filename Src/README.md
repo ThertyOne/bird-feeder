@@ -36,3 +36,24 @@ src/
 │     ├── telegram.h
 │     └── telegram.cpp
 ```
+
+## Konfiguracja
+Utwórz plik `src/config.h` na podstawie `src/config.example.h`:
+```c
+#define SSID_1 "NAZWA_WIFI"
+#define PASSWORD_1 "HASLO_WIFI"
+
+#define BOT_TOKEN "TOKEN_BOTA_TELEGRAM"
+#define CHAT_ID "ID_CZATU"
+
+#define PIR_SENSOR_PIN 14
+#define FLASH_LED_PIN 4
+#define SERVO_PIN 15
+```
+
+## Uruchomienie
+1. Skonfiguruj `config.h`.
+2. Podłącz `ESP32-CAM` do stabilnego zasilania 5 V.
+3. Wgraj program na płytkę.
+4. Otwórz Serial Monitor z prędkością: `115200 baud`.
+5. Sprawdź, czy urządzenie poprawnie łączy się z Wi-Fi.

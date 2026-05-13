@@ -1,3 +1,6 @@
+// Src/config.example.h
+// Example configuration file, copy to config.h and fill in your credentials and settings.
+
 #ifndef CONFIG_H
 #define CONFIG_H
 
