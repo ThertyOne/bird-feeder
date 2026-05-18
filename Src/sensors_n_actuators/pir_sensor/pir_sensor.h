@@ -1,29 +1,32 @@
-// Src/sensors/pir_sensor.h
-
 #ifndef PIR_SENSOR_H
 #define PIR_SENSOR_H
 
 #include <Arduino.h>
-#include "config.h"
 
 class PIRSensor {
 private:
-    gpio_num_t pin;
-    bool isReady = false;
-    bool motionDetected = false;
-    unsigned long lastTriggerTime = 0;
+    uint8_t pin;
+    uint8_t activeLevel;
+
     unsigned long warmupStartTime = 0;
+    unsigned long lastStateChangeTime = 0;
+    unsigned long lastCaptureTime = 0;
+
+    bool lastRawState = false;
+    bool stableMotionState = false;
 
 public:
-    PIRSensor(gpio_num_t sensorPin);
-    
+    PIRSensor(uint8_t sensorPin, uint8_t sensorActiveLevel = HIGH);
+
     void begin();
+
+    bool isWarmedUp() const;
+    bool isMotionRaw() const;
     bool isMotionDetected();
     bool isReadyForCapture();
+
+    void markCaptureDone();
     void reset();
-    
-private:
-    static void IRAM_ATTR handleMotionISR();
 };
 
 #endif

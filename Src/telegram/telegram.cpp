@@ -58,33 +58,35 @@ bool TelegramManager::sendMessage(const String& message) {
     return successfully_sent;
 }
 
-// temporary method - NOT TESTED
 bool TelegramManager::sendPhoto(uint8_t* jpgBuffer, size_t jpgSize) {
+    // Check buffer validity and return early if invalid
     if (jpgBuffer == nullptr || jpgSize == 0) {
-        Serial.println("[TELEGRAM] ✗ Invalid photo buffer");
+        Serial.println("[TELEGRAM] ERR: Invalid photo buffer");
         return false;
     }
     
+    // Send photo via Telegram API and check response
     String response = sendPhotoViaTelegram(jpgBuffer, jpgSize);
     
+    // Check if response indicates success
     if (response.length() > 0 && response.indexOf("\"ok\":true") >= 0) {
         Serial.println("[TELEGRAM] Photo sent!");
         return true;
     } else {
-        Serial.println("[TELEGRAM] Failed to send photo");
+        Serial.println("[TELEGRAM] ERR: Failed to send photo");
         Serial.println(response);
         return false;
     }
 }
 
-// temporary method - NOT TESTED
 String TelegramManager::sendPhotoViaTelegram(uint8_t* jpgBuffer, size_t jpgSize) {
-    const char* domain = "api.telegram.org";
-    String getBody = "";
+    const char* domain = "api.telegram.org"; // Telegram API server domain
+    String getBody = ""; // To store JSON/HTTP response body from Telegram API
     
-    if (clientTCP.connect(domain, 443)) {
+    if (clientTCP.connect(domain, 443)) { // 443 is the standard port for HTTPS
         Serial.println("[TELEGRAM] Connected to api.telegram.org");
         
+        // Prepare multipart/form-data headers and body for photo upload
         String head = "--Boundary123\r\n";
         head += "Content-Disposition: form-data; name=\"chat_id\"\r\n\r\n";
         head += String(CHAT_ID) + "\r\n";
@@ -104,7 +106,7 @@ String TelegramManager::sendPhotoViaTelegram(uint8_t* jpgBuffer, size_t jpgSize)
         clientTCP.println();
         clientTCP.print(head);
         
-        // Wyślij zdjęcie po 1KB chunkami
+        // Send photo data in 1kB chunks to avoid memory issues with large photos
         uint8_t* buf = jpgBuffer;
         size_t remaining = jpgSize;
         while (remaining > 0) {
@@ -116,57 +118,102 @@ String TelegramManager::sendPhotoViaTelegram(uint8_t* jpgBuffer, size_t jpgSize)
         
         clientTCP.print(tail);
         
-        // Czytaj response
-        unsigned long timeout = millis() + 10000;
-        while (millis() < timeout && clientTCP.connected()) {
+        // Get response
+        unsigned long startTime = millis();
+
+        while (millis() - startTime < 10000) {
             while (clientTCP.available()) {
                 char c = clientTCP.read();
                 getBody += c;
+
+                // Telegram confirmed success, no need to keep reading until TLS close.
+                if (getBody.indexOf("\"ok\":true") >= 0) {
+                    clientTCP.stop();
+                    return getBody;
+                }
             }
+
+            if (!clientTCP.connected()) {
+                break;
+            }
+
+            delay(10);
         }
         
         clientTCP.stop();
     } else {
-        Serial.println("[TELEGRAM] ✗ Connection failed");
+        Serial.println("[TELEGRAM] ERR: Connection failed");
     }
     
     return getBody;
 }
 
-// temporary method - NOT TESTED
-void TelegramManager::handleMessages() {
-    if (bot == nullptr) return;
-    
-    int numNewMessages = bot->getUpdates(bot->last_message_received + 1);
-    
-    if (numNewMessages > 0) {
-        Serial.print("[TELEGRAM] Got ");
-        Serial.print(numNewMessages);
-        Serial.println(" messages");
-        
-        for (int i = 0; i < numNewMessages; i++) {
-            String text = bot->messages[i].text;
-            String chatId = String(bot->messages[i].chat_id);
-            
-            // Sprawdź czy message z poprawnego chat_id
-            if (chatId != String(CHAT_ID)) {
-                bot->sendMessage(chatId, "❌ Unauthorized", "");
-                continue;
-            }
-            
-            if (text == "/start") {
-                String welcome = "🐦 Bird Feeder System Ready!\n";
-                welcome += "Commands:\n";
-                welcome += "/photo - Take photo now\n";
-                welcome += "/status - System status\n";
-                bot->sendMessage(CHAT_ID, welcome, "");
-            }
-            else if (text == "/photo") {
-                bot->sendMessage(CHAT_ID, "📸 Taking photo...", "");
-            }
-            else if (text == "/status") {
-                bot->sendMessage(CHAT_ID, "✅ System online", "");
-            }
-        }
+void TelegramManager::clearPendingMessages(uint8_t rounds) {
+    if (bot == nullptr) {
+        return;
     }
+
+    for (uint8_t i = 0; i < rounds; i++) {
+        int numMessages = bot->getUpdates(bot->last_message_received + 1);
+
+        if (numMessages <= 0) {
+            break;
+        }
+
+        delay(100);
+    }
+#if DEBUG_SERIAL_TELEGRAM
+    Serial.println("[TELEGRAM] Pending messages cleared");
+#endif
+}
+
+TelegramCommand TelegramManager::parseCommand(String text) {
+    text.trim();
+
+    int mentionPos = text.indexOf('@');
+    if (mentionPos > 0) {
+        text = text.substring(0, mentionPos);
+    }
+
+    // basic commands
+    if (text == "/start") return TelegramCommand::Start;
+    // initialization commands
+    if (text == "/init") return TelegramCommand::init;
+    if (text == "/init_debug") return TelegramCommand::init_debug;
+    if (text == "/init_full") return TelegramCommand::init_full;
+    // action commands
+    if (text == "/photo") return TelegramCommand::Photo;
+    if (text == "/status") return TelegramCommand::Status;
+
+    // default for unknown command
+    return TelegramCommand::Unknown;
+}
+
+TelegramCommand TelegramManager::handleMessages() {
+    if (bot == nullptr) {
+        Serial.println("[TELEGRAM] ERR: Bot not initialized");
+        return TelegramCommand::None;
+    }
+
+    int numNewMessages = bot->getUpdates(bot->last_message_received + 1);
+
+    if (numNewMessages <= 0) {
+        return TelegramCommand::None;
+    }
+
+    TelegramCommand lastCommand = TelegramCommand::None;
+
+    for (int i = 0; i < numNewMessages; i++) {
+        String chatId = String(bot->messages[i].chat_id);
+
+        if (chatId != String(CHAT_ID)) {
+            Serial.println("[TELEGRAM] Ignoring message from unauthorized chat ID: " + chatId);
+            bot->sendMessage(chatId, "Unauthorized access. This bot is private and only responds to the owner.");
+            continue;
+        }
+
+        lastCommand = parseCommand(bot->messages[i].text);
+    }
+
+    return lastCommand;
 }

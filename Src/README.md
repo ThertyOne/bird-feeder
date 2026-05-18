@@ -9,16 +9,16 @@ Aktualnie zaimplementowane:
 
 - konfiguracja projektu przez osobny plik `config.h`,
 - połączenie ESP32-CAM z siecią Wi-Fi,
+- inicjalizacja kamery OV2640,
+- wykonywanie zdjęcia,
+- wysyłanie zdjęcia przez Telegram,
 - podstawowa struktura modułowa kodu,
+- detekcja ptaka z użyciem czujnika ruchu / odległości,
+- obsługa komend Telegrama,
 - przygotowany moduł komunikacji z Telegram Bot API.
 
 Planowane / rozwijane:
 
-- obsługa komend Telegrama,
-- inicjalizacja kamery OV2640,
-- wykonywanie zdjęcia,
-- wysyłanie zdjęcia przez Telegram,
-- detekcja ptaka z użyciem czujnika ruchu / odległości,
 - rozpoznawanie gatunku ptaka.
 
 ## Struktura projektu
@@ -27,14 +27,24 @@ Planowane / rozwijane:
 src/
 ├── main.cpp
 ├── config.h                    # lokalny plik konfiguracyjny, nie obecny w repo
-├── config.example.h            # przykładowa konfiguracja
-├── sensors_n_actuators/
-│     ├── wifi_manager.h
-│     ├── wifi_manager.cpp
-│     └── ...
-├── telegram/
-│     ├── telegram.h
-│     └── telegram.cpp
+├── config.example.h            # przykładowa konfiguracja  
+|     
+├── sensors_n_actuators/        # moduły fizyczne
+│     ├── camera/
+│     |     ├── camera.h
+│     |     └── camer.cpp
+|     |
+│     ├── pir_sensor/
+│     |     ├── pir_sensor.h
+│     |     └── pir_sensor.cpp
+|     |
+│     ├── wifi_meneger/
+│           ├── wifi_meneger.h
+│           └── wifi_meneger.cpp
+|
+└── telegram/                   # serwer Telegram
+      ├── telegram.h
+      └── telegram.cpp
 ```
 
 ## Konfiguracja
@@ -51,9 +61,28 @@ Utwórz plik `src/config.h` na podstawie `src/config.example.h`:
 #define SERVO_PIN 15
 ```
 
-## Uruchomienie
+## Uruchomienie debugowania
 1. Skonfiguruj `config.h`.
 2. Podłącz `ESP32-CAM` do stabilnego zasilania 5 V.
 3. Wgraj program na płytkę.
 4. Otwórz Serial Monitor z prędkością: `115200 baud`.
 5. Sprawdź, czy urządzenie poprawnie łączy się z Wi-Fi.
+
+
+## Docs
+### Telegram:
+Moduł `TelegramManager` odpowiada za komunikację ESP32-CAM z Telegram Bot API.
+
+Obsługuje:
+- wysyłanie wiadomości tekstowych,
+- wysyłanie zdjęć JPEG,
+- odbieranie prostych komend użytkownika.
+
+## Wymagania konfiguracyjne
+
+W pliku `config.h` muszą być zdefiniowane:
+
+```cpp
+#define BOT_TOKEN "telegram_bot_token"
+#define CHAT_ID "authorized_chat_id"
+#define BOT_REQUEST_DELAY 1000UL

@@ -1,48 +1,76 @@
-// Src/sensors/pir_sensor.cpp
+// Src/sensors_n_actuators/pir_sensor/pir_sensor.cpp
 
 #include "pir_sensor.h"
+#include "config.h"
 
-// Global pointer dla ISR (Interrupt Service Routine)
-static PIRSensor* pirInstance = nullptr;
-
-void IRAM_ATTR PIRSensor::handleMotionISR() {
-    if (pirInstance != nullptr && pirInstance->isReady) {
-        pirInstance->motionDetected = true;
-    }
-}
-
-PIRSensor::PIRSensor(gpio_num_t sensorPin) : pin(sensorPin) {}
+PIRSensor::PIRSensor(uint8_t sensorPin, uint8_t sensorActiveLevel)
+    : pin(sensorPin), activeLevel(sensorActiveLevel) {}
 
 void PIRSensor::begin() {
-    pirInstance = this;
-    
     pinMode(pin, INPUT);
+
     warmupStartTime = millis();
-    
-    // Czekaj na kalibrację sensora
-    Serial.println("[PIR] Warming up sensor (45 sec)...");
-    delay(PIR_WARMUP_TIME);
-    
-    isReady = true;
-    Serial.println("[PIR] Sensor ready!");
-    
-    // Attach interrupt - HIGH means motion detected
-    attachInterrupt(digitalPinToInterrupt(pin), handleMotionISR, RISING);
+    lastStateChangeTime = millis();
+    lastCaptureTime = 0;
+
+    lastRawState = isMotionRaw();
+    stableMotionState = lastRawState;
+
+    Serial.print("[PIR] Initialized on GPIO ");
+    Serial.println(pin);
+
+    Serial.print("[PIR] Warmup time: ");
+    Serial.print(PIR_WARMUP_TIME);
+    Serial.println(" ms");
+}
+
+bool PIRSensor::isWarmedUp() const {
+    return millis() - warmupStartTime >= PIR_WARMUP_TIME;
+}
+
+bool PIRSensor::isMotionRaw() const {
+    return digitalRead(pin) == activeLevel;
 }
 
 bool PIRSensor::isMotionDetected() {
-    return motionDetected;
+    const bool currentRawState = isMotionRaw();
+    const unsigned long now = millis();
+
+    if (currentRawState != lastRawState) {
+        lastRawState = currentRawState;
+        lastStateChangeTime = now;
+    }
+
+    if (now - lastStateChangeTime >= PIR_DEBOUNCE_TIME) {
+        stableMotionState = currentRawState;
+    }
+
+    return stableMotionState;
 }
 
 bool PIRSensor::isReadyForCapture() {
-    // Sprawdź czy minął czas debounce'a
-    if (millis() - lastTriggerTime < PIR_DEBOUNCE_TIME) {
+    if (!isWarmedUp()) {
         return false;
     }
-    return true;
+
+    if (!isMotionDetected()) {
+        return false;
+    }
+
+    if (lastCaptureTime == 0) {
+        return true;
+    }
+
+    return millis() - lastCaptureTime >= PIR_CAPTURE_COOLDOWN;
+}
+
+void PIRSensor::markCaptureDone() {
+    lastCaptureTime = millis();
 }
 
 void PIRSensor::reset() {
-    motionDetected = false;
-    lastTriggerTime = millis();
+    stableMotionState = false;
+    lastRawState = isMotionRaw();
+    lastStateChangeTime = millis();
+    lastCaptureTime = millis();
 }

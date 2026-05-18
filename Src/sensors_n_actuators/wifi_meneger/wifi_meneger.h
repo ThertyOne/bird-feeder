@@ -5,7 +5,7 @@
 
 #include <Arduino.h>
 
-bool connectToWiFi(uint32_t timeoutMs = 10000);
+bool connectToWiFi(uint32_t timeoutMs = 60000);
 bool isWiFiConnected();
 
 #endif

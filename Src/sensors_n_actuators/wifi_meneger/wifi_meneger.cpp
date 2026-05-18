@@ -25,7 +25,7 @@ static bool tryConnect(const char* ssid, const char* password, uint32_t timeoutM
     //Serial.println("<<<----- DEBUG MODE ----->>>");
     Serial.print("[WIFI] Connection attempt to ");
     Serial.print(ssid);
-    Serial.print(" - Status: ")
+    Serial.print(" - Status: ");
     Serial.println(WiFi.status() == WL_CONNECTED ? "Connected" : "Failed");
     //Serial.println("<<<--- END DEBUG MODE --->>>\n");
 #endif
