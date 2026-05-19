@@ -177,13 +177,21 @@ TelegramCommand TelegramManager::parseCommand(String text) {
 
     // basic commands
     if (text == "/start") return TelegramCommand::Start;
+    if (text == "/help") return TelegramCommand::Help;  
+    if (text == "/status") return TelegramCommand::Status;
     // initialization commands
     if (text == "/init") return TelegramCommand::init;
     if (text == "/init_debug") return TelegramCommand::init_debug;
     if (text == "/init_full") return TelegramCommand::init_full;
+    // test commands
+    if (text == "/test_pir") return TelegramCommand::Test_pir;
+    if (text == "/wifi_status") return TelegramCommand::WiFi_status;
+    if (text == "/test_camera") return TelegramCommand::Test_camera;
+    if (text == "/config_info") return TelegramCommand::Config_info;
     // action commands
-    if (text == "/photo") return TelegramCommand::Photo;
-    if (text == "/status") return TelegramCommand::Status;
+    if (text == "/run_silent") return TelegramCommand::Run_silent;
+    if (text == "/run_debug") return TelegramCommand::Run_debug;
+    if (text == "/stop") return TelegramCommand::Stop;
 
     // default for unknown command
     return TelegramCommand::Unknown;
@@ -216,4 +224,63 @@ TelegramCommand TelegramManager::handleMessages() {
     }
 
     return lastCommand;
+}
+
+const char* TelegramManager::commandToString(TelegramCommand command) {
+    switch (command) {
+        // basic commands
+        case TelegramCommand::None:
+            return "None";
+
+        case TelegramCommand::Start:
+            return "Start";
+
+        case TelegramCommand::Unknown:
+            return "Unknown";
+
+        case TelegramCommand::Help:
+            return "Help";
+
+        case TelegramCommand::Status:
+            return "Status";
+
+        // initialization commands
+        case TelegramCommand::init:
+            return "init";
+
+        case TelegramCommand::init_debug:
+            return "init_debug";
+
+        case TelegramCommand::init_full:
+            return "init_full";
+
+        // test commands
+        case TelegramCommand::Test_pir:
+            return "Test_PIR_sensor";
+
+        case TelegramCommand::WiFi_status:
+            return "WiFi_status";
+
+        case TelegramCommand::Test_camera:
+            return "Test_camera";
+
+        case TelegramCommand::Config_info:
+            return "Config_info";
+
+        // action commands
+        case TelegramCommand::Run_silent:
+            return "Run_silent";
+
+        case TelegramCommand::Run_debug:
+            return "Run_debug"; 
+
+        case TelegramCommand::Stop:
+            return "Stop";
+
+        case TelegramCommand::Change_configuration:
+            return "Change_configuration";
+
+        default:
+            return "Invalid";
+    }
 }

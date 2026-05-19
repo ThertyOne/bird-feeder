@@ -13,15 +13,27 @@
 enum class TelegramCommand {
     // Basic commands
     None,
-    Start,
+    Start,                  // not implemented yet
     Unknown,
+    Help,
+    Status,                 // not implemented yet
+
     // Initialization commands
     init,
     init_debug,
     init_full,
+
+    // Test commands
+    Test_pir,
+    WiFi_status,            // not implemented yet
+    Test_camera,            // not implemented yet
+    Config_info,            // not implemented yet
+
     // Action commands
-    Photo,
-    Status
+    Run_silent,             // not implemented yet
+    Run_debug,              // not implemented yet
+    Stop,
+    Change_configuration,   // not implemented yet
 };
 
 class TelegramManager {
@@ -38,6 +50,8 @@ public:
     bool sendPhoto(uint8_t* jpgBuffer, size_t jpgSize);
     TelegramCommand handleMessages();
     void clearPendingMessages(uint8_t rounds = 3);
+
+    static const char* commandToString(TelegramCommand command);
 
 private:
     String sendPhotoViaTelegram(uint8_t* jpgBuffer, size_t jpgSize);

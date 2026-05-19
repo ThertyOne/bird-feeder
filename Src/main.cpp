@@ -8,18 +8,30 @@
 #include "sensors_n_actuators/camera/camera.h"
 #include "telegram/telegram.h"
 
-
 // Setup
 PIRSensor pirSensor(PIR_SENSOR_PIN, PIR_ACTIVE_LEVEL);
 TelegramManager telegramBot;
 bool wifiReady = false;
 bool telegramReady = false;
 bool cameraReady = false;
+String mode = "None";
 
-// Utils (definitions at the end of this file)
+// Utils (Prototypes, definitions at the end of this file)
 bool captureAndSendPhoto();
-String buildStatusMessage();
 void telegramIntroMessage();
+void telegramMainLoopIntroMessage();
+void handleTelegramCommandInMainLoop();
+void helpMessage();
+String buildStatusMessage();
+void testPirSensor();
+void resetPirSensorTest();
+void runSilentMode();
+
+// Tests
+// PIR sensor test state
+bool pirTestStarted = false;
+bool pirTestListening = false;
+bool pirWasActive = false;
 
 void setup() {
     String fullDebugMessage = "";
@@ -47,7 +59,7 @@ void setup() {
     // Config info
     briefDebugMessage += "Config loaded successfully.\n";
     fullDebugMessage += "Config loaded successfully:\n";
-    fullDebugMessage += "Debug mode:\n\tSERIAL=" + String(DEBUG_SERIAL) + ",\n\tWIFI=" + String(DEBUG_SERIAL_WIFI) + ",\n\tTELEGRAM=" + String(DEBUG_SERIAL_TELEGRAM) + ",\n\tCHECK_CONNECTION=" + String(CHECK_TELEGRAM_CONNECTION) + "\n\n";
+    fullDebugMessage += "Debug mode:\n\tSERIAL=" + String(DEBUG_SERIAL) + ",\n\tWIFI=" + String(DEBUG_SERIAL_WIFI) + ",\n\tTELEGRAM=" + String(DEBUG_SERIAL_TELEGRAM) + "\n\n";
     
     // Connect to WiFi
     delay(100); // Small cautious delay before starting WiFi connection
@@ -120,7 +132,7 @@ void setup() {
     fullDebugMessage += "PIR sensor debounce time:\t" + String(PIR_DEBOUNCE_TIME) + " ms\n";
     fullDebugMessage += "PIR sensor cooldown time:\t" + String(PIR_CAPTURE_COOLDOWN) + " ms\n\n";
 
-    // Setup complete message
+    // Setup complete message and intro information
     Serial.println("[SYSTEM] Initialization complete.");
     while (true) {
         TelegramCommand introCommand = telegramBot.handleMessages();
@@ -129,12 +141,16 @@ void setup() {
             delay(BOT_RESPONSE_DELAY);
             continue;
         } if (introCommand == TelegramCommand::init) {
+            telegramBot.sendMessage("Initialization complete. Running in silent automatic mode.");
+            mode = "Silent";
             break;
         } if (introCommand == TelegramCommand::init_debug) {
             telegramBot.sendMessage(briefDebugMessage);
             break;
         } if (introCommand == TelegramCommand::init_full) {
             telegramBot.sendMessage(fullDebugMessage);
+            telegramBot.sendMessage("Sending full help message with available commands...");
+            helpMessage();
             break;
         } telegramBot.sendMessage("Use /init, /init_debug, or /init_full to finish initialization.");
 
@@ -144,27 +160,93 @@ void setup() {
     delay(100); // Small delay before entering main loop
 }
 
-// Main loop
+// Entry point
 void loop() {
-    // Chceck WiFi status
-    bool wifiStatus = isWiFiConnected();
+    // If we're in "None" mode, we wait for the user to choose a mode via Telegram commands.
+    if (mode == "None") {
+        // Send intro message with available commands
+        telegramMainLoopIntroMessage();
 
-    // Check status of all critical components.
-    if (!wifiReady || !telegramReady || !cameraReady) {
-        Serial.println("[SYSTEM] Critical component(s) not ready:");
-        if (!wifiReady) Serial.println("- WiFi not ready");
-        if (!telegramReady) Serial.println("- Telegram bot not ready");
-        if (!cameraReady) Serial.println("- Camera not ready");
-        delay(1000);
-        return;
+        // Check for Telegram commands
+        while (true) {
+            // Check for Telegram commands
+            handleTelegramCommandInMainLoop();
+            // Check for mode change
+            if (mode != "None") break;
+            // Small delay to avoid spamming Telegram with responses
+            delay(BOT_RESPONSE_DELAY);
+        }
     }
 
-    delay(1000);
+    // Main loop
+    while (mode != "None") {
+        // Check for Telegram commands
+        handleTelegramCommandInMainLoop();
+
+        // If we're in silent mode, we only capture and send photos when motion is detected by the PIR sensor
+        if (mode == "Silent") {
+            runSilentMode();
+        } else if (mode == "Debug") {
+            // Not implemented yet
+        } else if (mode == "Test_pir") {
+            testPirSensor();
+        }
+
+        // Small delay to avoid spamming Telegram with responses and to allow for PIR sensor debounce
+        //delay(BOT_REQUEST_DELAY);
+        if (mode == "Test_pir" || mode == "Silent") {
+            delay(100);
+        } else {
+            delay(BOT_REQUEST_DELAY);
+        }
+    }
 }   
 
-
 // Utils - definitions
-// temporary function - not tested
+void telegramIntroMessage(){
+    telegramBot.sendMessage(
+    "🌿🟢🌿🟢🌿🟢🌿🟢🌿\n"
+    "\n"
+    "  🐦 BIRD FEEDER SYSTEM\n"
+    "\n"
+    "  🚀 STARTING UP...\n"
+    "\n"
+    "🌿🟢🌿🟢🌿🟢🌿🟢🌿");
+
+    String intro = "Hello! I'm your friendly neighborhood bird feeder system, powered by ESP32-CAM.";
+    intro += " I'm here to keep an eye on your feathered friends and share their photos with you!\n";
+    intro += "What should I do now?\nHere are some commands you can use:\n";
+    intro += "/init - initialize the system quaietly, report success and run silent automatic mode\n";
+    intro += "/init_debug - initialize the system with brief debug output\n";
+    intro += "/init_full - initialize the system with full debug output\n";
+    telegramBot.sendMessage(intro);
+}
+
+void telegramMainLoopIntroMessage() {
+    telegramBot.sendMessage(
+        "🌿🟢🌿🟢🌿🟢🌿🟢🌿\n"
+        " 🐦 BIRD FEEDER SYSTEM\n"
+        "🌿🟢🌿🟢🌿🟢🌿🟢🌿\n"
+        "\n"
+        "System ready.\n"
+        "\n"
+        "Available basic commands:\n"
+        "\n"
+        "📖 /help\n"
+        "Show available commands.\n"
+        "\n"
+        "🌙 /run_silent\n"
+        "Start silent automatic mode.\n"
+        "The feeder sends a photo only when PIR detects motion.\n"
+        "\n"
+        "🛠 /run_debug\n"
+        "Start automatic mode with debug messages.\n"
+        "\n"
+        "🛑 /stop\n"
+        "Stop automatic mode.\n"
+    );
+}
+
 bool captureAndSendPhoto() {
     if (!isWiFiConnected()) {
         Serial.println("[PHOTO] Skipped: WiFi disconnected.");
@@ -201,6 +283,174 @@ bool captureAndSendPhoto() {
     return sent;
 }
 
+void handleTelegramCommandInMainLoop() {    
+    // Get the latest command from Telegram
+    TelegramCommand command = telegramBot.handleMessages();
+    Serial.println("[TELEGRAM] Received command: " + String(telegramBot.commandToString(command)));
+
+    switch (command) {
+        case TelegramCommand::Help:
+            helpMessage();
+            break;
+
+        case TelegramCommand::Run_silent:
+            telegramBot.sendMessage("Starting silent automatic mode. The feeder will send a photo only when motion is detected by the PIR sensor.");
+            mode = "Silent";
+            break;
+
+        case TelegramCommand::Run_debug:
+            telegramBot.sendMessage("Starting automatic debug mode. The feeder will send a photo when motion is detected by the PIR sensor.\n"
+                                    "Also there will be debug messages sent to the serial monitor and Telegram.");
+            mode = "Debug";
+            break;
+
+        case TelegramCommand::Stop:
+            telegramBot.sendMessage("Stopping current mode.\nThe feeder will no longer send photos when motion is detected.");
+            resetPirSensorTest(); 
+            mode = "None";
+            break;
+
+        case TelegramCommand::Test_pir:
+            telegramBot.sendMessage("Testing PIR sensor...\n"
+                                    "Every time motion is detected by the PIR sensor, a message will be sent to Telegram and the serial monitor.\n");
+            mode = "Test_pir";
+            resetPirSensorTest();
+            break;
+
+        case TelegramCommand::None:
+            // No command received, do nothing
+            break;
+
+        default:
+            telegramBot.sendMessage("Unsupported command received.");
+            break;
+    }
+}
+
+void helpMessage() {
+    telegramBot.sendMessage(
+        "BIRD FEEDER SYSTEM - COMMANDS\n"
+        "\n"
+        "\n"
+        "Basic commands:\n"
+        "/start - show intro message\n"
+        "/help - show this command list\n"
+        "/status - show general system status [in development]\n"
+        "\n"
+        "Initialization commands:\n"
+        "/init - initialize quietly and run silent automatic mode\n"
+        "/init_debug - initialize with brief debug output\n"
+        "/init_full - initialize with full debug output\n"
+        "\n"
+        "Test commands:\n"
+        "/test_pir - test PIR sensor\n"
+        "/wifi_status - show WiFi status [in development]\n"
+        "/test_camera - test camera capture [in development]\n"
+        "/config_info - show selected config info [in development]\n"
+        "\n"
+        "Run commands:\n"
+        "/run_silent - start silent automatic mode\n"
+        "/run_debug - start automatic debug mode [in development]\n"
+        "/stop - stop automatic mode\n"
+        "/change_config - change selected config parameters [in development]\n"
+    );
+}
+
+void testPirSensor() {
+    if (!pirTestStarted) {
+        pirTestStarted = true;
+        pirTestListening = false;
+        pirWasActive = false;
+
+        telegramBot.sendMessage(
+            "PIR sensor test started.\n\n"
+            "Send /stop to finish.\n\n"
+            "Pin: " + String(PIR_SENSOR_PIN) + "\n"
+            "Active level: " + String(PIR_ACTIVE_LEVEL) + "\n"
+            "Debounce time: " + String(PIR_DEBOUNCE_TIME) + " ms"
+        );
+
+        Serial.println("[PIR TEST] Started.");
+    }
+
+    // Check if the PIR sensor is warmed up and ready to detect motion
+    if (!pirSensor.isWarmedUp()) {
+        static unsigned long lastWarmupMsg = 0;
+
+        if (millis() - lastWarmupMsg >= 5000UL) {
+            lastWarmupMsg = millis();
+            telegramBot.sendMessage("PIR warming up...");
+            Serial.println("[PIR TEST] Warming up...");
+        }
+
+        return;
+    }
+
+    bool motion = pirSensor.isMotionDetected();
+
+    // If no motion is detected and we are not already in listening mode, enter listening mode
+    if (!motion && !pirTestListening) {
+        pirTestListening = true;
+        pirWasActive = false;
+
+        telegramBot.sendMessage("PIR test: listening...");
+        Serial.println("[PIR TEST] Listening...");
+    }
+
+    // If motion is detected and we were not already active, send a message and enter active state
+    if (motion && !pirWasActive) {
+        pirWasActive = true;
+        pirTestListening = false;
+
+        telegramBot.sendMessage("PIR motion detected.");
+        Serial.println("[PIR TEST] Motion detected.");
+    }
+}
+
+void resetPirSensorTest() {
+    pirTestStarted = false;
+    pirTestListening = false;
+    pirWasActive = false;
+    pirSensor.reset();
+}
+
+void runSilentMode() {
+    static bool pirWasActive = false;
+
+    if (!pirSensor.isWarmedUp()) {
+        return;
+    }
+
+    bool motionDetected = pirSensor.isMotionDetected();
+
+    // React only on transition: idle -> motion
+    if (motionDetected && !pirWasActive) {
+        Serial.println("[SILENT MODE] PIR motion detected.");
+
+        if (pirSensor.isReadyForCapture()) {
+            telegramBot.sendMessage(
+                "Motion detected near the feeder.\n"
+                "Taking photo..."
+            );
+
+            bool sent = captureAndSendPhoto();
+
+            // Mark capture attempt anyway to avoid repeated triggering
+            // if PIR output stays HIGH for a long time.
+            pirSensor.markCaptureDone();
+
+            if (sent) {
+                Serial.println("[SILENT MODE] Photo sent.");
+            } else {
+                Serial.println("[SILENT MODE] Photo sending failed.");
+            }
+        }
+    }
+
+    // Update state for edge detection
+    pirWasActive = motionDetected;
+}
+
 // temporary function - not tested
 String buildStatusMessage() {
     String status = "Bird Feeder status\n";
@@ -227,31 +477,6 @@ String buildStatusMessage() {
 
     return status;
 }
-
-void telegramIntroMessage(){
-    telegramBot.sendMessage("🌿🟢🌿🟢🌿🟢🌿🟢🌿🟢\n"
-    "\n"
-    "     🐦 BIRD FEEDER SYSTEM\n"
-    "\n"
-    "     🚀 STARTING UP...\n"
-    "\n"
-    "🌿🟢🌿🟢🌿🟢🌿🟢🌿🟢");
-
-    String intro = "Hello! I'm your friendly neighborhood bird feeder system, powered by ESP32-CAM.";
-    intro += " I'm here to keep an eye on your feathered friends and share their photos with you!\n";
-    intro += "What should I do now?\nHere are some commands you can use:\n";
-    intro += "/init - initialize the system quaietly and report success\n";
-    intro += "/init_debug - initialize the system with brief debug output\n";
-    intro += "/init_full - initialize the system with full debug output\n";
-    telegramBot.sendMessage(intro);
-}
-
-
-
-
-
-
-
 
 
 
