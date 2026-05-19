@@ -9,15 +9,21 @@
 // ============================================
 #define SSID_1 "xxx"
 #define PASSWORD_1 "xxx"
-
 //#define SSID_2 "XXX"
 //#define PASSWORD_2 "XXX"
+//#define SSID_3 "XXX"
+//#define PASSWORD_3 "XXX"
 
 // ============================================
 // TELEGRAM SECRETS
 // ============================================
 #define BOT_TOKEN "xxx"
 #define CHAT_ID "xxx"
+// ============================================
+// TELEGRAM BOT CONFIGURATION
+// ============================================
+#define BOT_REQUEST_DELAY 3000UL        // 3s - delay between Telegram Bot API requests
+#define BOT_RESPONSE_DELAY 500UL        // 500ms - delay to wait for a response from Telegram Bot API before timing out
 
 // ============================================
 // PIN DEFINITIONS
@@ -29,17 +35,16 @@
 // ============================================
 // SENSOR CONFIGURATION
 // ============================================
-#define PIR_DEBOUNCE_TIME 5000UL    // 5s - time to ignore subsequent triggers after the first one
-#define PIR_WARMUP_TIME 45000UL     // 45s - time for the PIR sensor to stabilize after power-up
-
-// ============================================
-// TELEGRAM BOT
-// ============================================
-#define BOT_REQUEST_DELAY 1000UL    // Check for new messages every 1 second
+#define PIR_DEBOUNCE_TIME 500UL         // 500ms - time to ignore subsequent triggers after the first one
+#define PIR_WARMUP_TIME 30000UL         // 30s - time for the PIR sensor to stabilize after power-up
+#define PIR_CAPTURE_COOLDOWN 45000UL    // 45s - minimum time between captures
+#define PIR_ACTIVE_LEVEL 1              // PIR sensor active level (1 = HIGH, 0 = LOW)
 
 // ============================================
 // DEBUG
 // ============================================
-#define DEBUG_SERIAL 1      // 1 = debug logs on, 0 = disable logs
+#define DEBUG_SERIAL 1                  // 1 = debug logs on, 0 = disable logs
+#define DEBUG_SERIAL_WIFI 1             // 1 = log WiFi_meneger logs, 0 = only main logs
+#define DEBUG_SERIAL_TELEGRAM 1         // 1 = log TelegramBot logs, 0 = only main logs
 
 #endif
