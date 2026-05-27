@@ -34,6 +34,7 @@ enum class TelegramCommand {
     Run_debug,              // not implemented yet
     Stop,
     Change_configuration,   // not implemented yet
+    Reset
 };
 
 class TelegramManager {

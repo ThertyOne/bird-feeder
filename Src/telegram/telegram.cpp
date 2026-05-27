@@ -35,6 +35,11 @@ void TelegramManager::begin() {
 }
 
 bool TelegramManager::sendMessage(const String& message) {
+    static uint32_t messageCounter = 0;
+    messageCounter++;
+
+    String debugMessage = "[MSG #" + String(messageCounter) + "]\n\n" + message;
+
     if (bot == nullptr) {
         Serial.println("[TELEGRAM] Bot not initialized");
         return false;
@@ -47,7 +52,7 @@ bool TelegramManager::sendMessage(const String& message) {
     //Serial.println("<<<--- END DEBUG MODE --->>>\n");
 #endif
 
-    bool successfully_sent = bot->sendMessage(CHAT_ID, message, "");
+    bool successfully_sent = bot->sendMessage(CHAT_ID, debugMessage, "");
 
     if (successfully_sent) {
         Serial.println("[TELEGRAM] Message [" + message + "] sent");
@@ -192,6 +197,7 @@ TelegramCommand TelegramManager::parseCommand(String text) {
     if (text == "/run_silent") return TelegramCommand::Run_silent;
     if (text == "/run_debug") return TelegramCommand::Run_debug;
     if (text == "/stop") return TelegramCommand::Stop;
+    if (text == "/reset") return TelegramCommand::Reset;
 
     // default for unknown command
     return TelegramCommand::Unknown;
@@ -279,6 +285,9 @@ const char* TelegramManager::commandToString(TelegramCommand command) {
 
         case TelegramCommand::Change_configuration:
             return "Change_configuration";
+
+        case TelegramCommand::Reset:
+            return "Reset";
 
         default:
             return "Invalid";

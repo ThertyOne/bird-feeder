@@ -8,25 +8,16 @@ private:
     uint8_t pin;
     uint8_t activeLevel;
 
-    unsigned long warmupStartTime = 0;
-    unsigned long lastStateChangeTime = 0;
-    unsigned long lastCaptureTime = 0;
-
-    bool lastRawState = false;
-    bool stableMotionState = false;
-
 public:
     PIRSensor(uint8_t sensorPin, uint8_t sensorActiveLevel = HIGH);
 
     void begin();
 
-    bool isWarmedUp() const;
-    bool isMotionRaw() const;
-    bool isMotionDetected();
-    bool isReadyForCapture();
+    bool readDigital() const;        // true = HIGH, false = LOW
+    bool isMotionDetected() const;   // true = signal == activeLevel
 
-    void markCaptureDone();
-    void reset();
+    uint8_t getPin() const;
+    uint8_t getActiveLevel() const;
 };
 
 #endif

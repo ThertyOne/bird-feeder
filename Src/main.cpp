@@ -24,16 +24,33 @@ void handleTelegramCommandInMainLoop();
 void helpMessage();
 String buildStatusMessage();
 void testPirSensor();
-void resetPirSensorTest();
 void runSilentMode();
 
-// Tests
-// PIR sensor test state
-bool pirTestStarted = false;
-bool pirTestListening = false;
-bool pirWasActive = false;
 
+// Initialization
 void setup() {
+#if DEBUG_STARTUP
+
+    // Initialize Serial
+    Serial.begin(115200);
+    delay(3000); // Coucious delay to allow Serial monitor to connect
+
+    // Test PIR
+    Serial.println("Testing PIR sensor.");
+    pirSensor.begin();
+    Serial.println("Outputting PIR state every third of a second.");
+    while (true) {
+        delay(333);
+
+        bool rawHigh = pirSensor.readDigital();
+        bool motion = pirSensor.isMotionDetected();
+
+        Serial.print("raw=");
+        Serial.print(rawHigh ? "HIGH" : "LOW");
+        Serial.print(" motion=");
+        Serial.println(motion ? "YES" : "NO");
+    }
+#else // Normal setup() ( DEBUG_STARTUP = 0 )
     String fullDebugMessage = "";
     String briefDebugMessage = "";
 
@@ -59,7 +76,7 @@ void setup() {
     // Config info
     briefDebugMessage += "Config loaded successfully.\n";
     fullDebugMessage += "Config loaded successfully:\n";
-    fullDebugMessage += "Debug mode:\n\tSERIAL=" + String(DEBUG_SERIAL) + ",\n\tWIFI=" + String(DEBUG_SERIAL_WIFI) + ",\n\tTELEGRAM=" + String(DEBUG_SERIAL_TELEGRAM) + "\n\n";
+    fullDebugMessage += "Debug mode:\n\tSERIAL=" + String(DEBUG_SERIAL) + ",\n\tWIFI=" + String(DEBUG_SERIAL_WIFI) + ",\n\tTELEGRAM=" + String(DEBUG_SERIAL_TELEGRAM) + ",\n\tMESSAGE_COUNTER=" + String(DEBUG_MESSAGE_COUNTER) + ".\n\n";
     
     // Connect to WiFi
     delay(100); // Small cautious delay before starting WiFi connection
@@ -128,9 +145,8 @@ void setup() {
     fullDebugMessage += "PIR sensor initialized successfully:\n";
     fullDebugMessage += "PIR sensor pin:\t" + String(PIR_SENSOR_PIN) + "\n";
     fullDebugMessage += "PIR sensor active level:\t" + String(PIR_ACTIVE_LEVEL) + "\n";
-    fullDebugMessage += "PIR sensor warm-up time:\t" + String(PIR_WARMUP_TIME) + " ms\n";
-    fullDebugMessage += "PIR sensor debounce time:\t" + String(PIR_DEBOUNCE_TIME) + " ms\n";
-    fullDebugMessage += "PIR sensor cooldown time:\t" + String(PIR_CAPTURE_COOLDOWN) + " ms\n\n";
+    fullDebugMessage += "PIR sensor state:\t" + String(pirSensor.isMotionDetected()) + "\n";
+    fullDebugMessage += "PIR sensor cooldown time:\t" + String(PIR_CAPTURE_COOLDOWN) + "ms.\n\n";
 
     // Setup complete message and intro information
     Serial.println("[SYSTEM] Initialization complete.");
@@ -157,29 +173,32 @@ void setup() {
         delay(BOT_RESPONSE_DELAY);
     }
 
-    delay(100); // Small delay before entering main loop
+#endif
+    delay(100); // Small delay before entering main loop (sanity check)
 }
 
 // Entry point
 void loop() {
+#if DEBUG_STARTUP
+    // pass
+#else // DEBUG_STARTUP = 0
+
     // If we're in "None" mode, we wait for the user to choose a mode via Telegram commands.
     if (mode == "None") {
         // Send intro message with available commands
         telegramMainLoopIntroMessage();
 
         // Check for Telegram commands
-        while (true) {
+        while (mode == "None") {
             // Check for Telegram commands
             handleTelegramCommandInMainLoop();
-            // Check for mode change
-            if (mode != "None") break;
             // Small delay to avoid spamming Telegram with responses
             delay(BOT_RESPONSE_DELAY);
         }
     }
 
     // Main loop
-    while (mode != "None") {
+    while (true) {
         // Check for Telegram commands
         handleTelegramCommandInMainLoop();
 
@@ -188,19 +207,23 @@ void loop() {
             runSilentMode();
         } else if (mode == "Debug") {
             // Not implemented yet
+        }else if(mode == "Stop"){
+            break;
         } else if (mode == "Test_pir") {
             testPirSensor();
+            break;
+        } else if (mode == "Reset"){
+            mode = "None";
+            delay(200);
+            ESP.restart();
+            break; // Redundant break to at least reset main loop if ESP.restart() fails.
         }
 
-        // Small delay to avoid spamming Telegram with responses and to allow for PIR sensor debounce
-        //delay(BOT_REQUEST_DELAY);
-        if (mode == "Test_pir" || mode == "Silent") {
-            delay(100);
-        } else {
-            delay(BOT_REQUEST_DELAY);
-        }
+        delay(BOT_REQUEST_DELAY);
     }
+#endif
 }   
+
 
 // Utils - definitions
 void telegramIntroMessage(){
@@ -219,6 +242,7 @@ void telegramIntroMessage(){
     intro += "/init - initialize the system quaietly, report success and run silent automatic mode\n";
     intro += "/init_debug - initialize the system with brief debug output\n";
     intro += "/init_full - initialize the system with full debug output\n";
+    intro += "Keep in mind that initialization might take up to a minute ;)";
     telegramBot.sendMessage(intro);
 }
 
@@ -286,7 +310,7 @@ bool captureAndSendPhoto() {
 void handleTelegramCommandInMainLoop() {    
     // Get the latest command from Telegram
     TelegramCommand command = telegramBot.handleMessages();
-    Serial.println("[TELEGRAM] Received command: " + String(telegramBot.commandToString(command)));
+    Serial.println("[TELEGRAM] Checking for a command: " + String(telegramBot.commandToString(command)));
 
     switch (command) {
         case TelegramCommand::Help:
@@ -294,29 +318,30 @@ void handleTelegramCommandInMainLoop() {
             break;
 
         case TelegramCommand::Run_silent:
-            telegramBot.sendMessage("Starting silent automatic mode. The feeder will send a photo only when motion is detected by the PIR sensor.");
             mode = "Silent";
             break;
 
-        case TelegramCommand::Run_debug:
+        case TelegramCommand::Run_debug: // Not implemented yet
             telegramBot.sendMessage("Starting automatic debug mode. The feeder will send a photo when motion is detected by the PIR sensor.\n"
                                     "Also there will be debug messages sent to the serial monitor and Telegram.");
             mode = "Debug";
             break;
 
         case TelegramCommand::Stop:
-            telegramBot.sendMessage("Stopping current mode.\nThe feeder will no longer send photos when motion is detected.");
-            resetPirSensorTest(); 
+            telegramBot.sendMessage("Stopping current mode.\nThe feeder will no longer send photos when motion is detected,\nnor any test data.");
             mode = "None";
             break;
 
-        case TelegramCommand::Test_pir:
-            telegramBot.sendMessage("Testing PIR sensor...\n"
-                                    "Every time motion is detected by the PIR sensor, a message will be sent to Telegram and the serial monitor.\n");
+        case TelegramCommand::Test_pir: // Not implemented yet
             mode = "Test_pir";
-            resetPirSensorTest();
             break;
-
+        
+        case TelegramCommand::Reset:
+            telegramBot.sendMessage("Feeder will reset now. It might take few seconds...");
+            mode = "Reset";
+            Serial.flush();
+            break;
+ 
         case TelegramCommand::None:
             // No command received, do nothing
             break;
@@ -353,102 +378,118 @@ void helpMessage() {
         "/run_debug - start automatic debug mode [in development]\n"
         "/stop - stop automatic mode\n"
         "/change_config - change selected config parameters [in development]\n"
+        "/restart - resets the ESP board with all periferies."
     );
 }
 
 void testPirSensor() {
-    if (!pirTestStarted) {
-        pirTestStarted = true;
-        pirTestListening = false;
-        pirWasActive = false;
+    bool state = false;
+    String message;
+    message.reserve(2048);
+    message = "PIR raport from last 5s:\n\n";
 
-        telegramBot.sendMessage(
-            "PIR sensor test started.\n\n"
-            "Send /stop to finish.\n\n"
-            "Pin: " + String(PIR_SENSOR_PIN) + "\n"
-            "Active level: " + String(PIR_ACTIVE_LEVEL) + "\n"
-            "Debounce time: " + String(PIR_DEBOUNCE_TIME) + " ms"
-        );
+    // Initialize test
+    telegramBot.sendMessage(
+        "PIR test started.\n"
+        "Send /stop to finish.\n\n"
+        "Pin: " + String(pirSensor.getPin()) + "\n"
+        "Active level: " + String(pirSensor.getActiveLevel()) + "\n\n"
+        "Feeder will collect PIR sensor state every tenth of a second and send it acumulated every 2s. It will also send live data via UART interface.\n\n"
+        "Listening for motion..."
+    );
+    Serial.println("[PIR TEST] Simple test started.");
 
-        Serial.println("[PIR TEST] Started.");
-    }
-
-    // Check if the PIR sensor is warmed up and ready to detect motion
-    if (!pirSensor.isWarmedUp()) {
-        static unsigned long lastWarmupMsg = 0;
-
-        if (millis() - lastWarmupMsg >= 5000UL) {
-            lastWarmupMsg = millis();
-            telegramBot.sendMessage("PIR warming up...");
-            Serial.println("[PIR TEST] Warming up...");
+    int i = 1;
+    while (true){
+        // Check for stop
+        if (i%5 == 0){
+            TelegramCommand lastMessage = telegramBot.handleMessages();
+            if (lastMessage == TelegramCommand::Stop) {
+                telegramBot.sendMessage("Stopping PIR sensor test.");
+                telegramBot.sendMessage(message);
+                mode = "None";
+                break;
+            }
         }
 
-        return;
+        // Get PIR state
+        bool rawHigh = pirSensor.readDigital();
+        bool motion = pirSensor.isMotionDetected();
+
+        // Write messages
+        Serial.print("[PIR TEST] Raw signal: ");
+        Serial.print(rawHigh ? "HIGH" : "LOW");
+        Serial.print(", motion: ");
+        Serial.println(motion ? "YES" : "NO");
+        message += String(float(i)/10) + "s  -  Raw signal: ";
+        message += rawHigh ? "HIGH" : "LOW";
+        message += ", Motion: ";
+        message += motion ? "YES" : "NO";
+        message += ".\n";
+
+        // send telegram message
+        if (i%20 == 0){
+            telegramBot.sendMessage(message);
+            message = "PIR raport from last 5s:\n\n";
+        }
+
+        delay(100);
+        i ++;
     }
-
-    bool motion = pirSensor.isMotionDetected();
-
-    // If no motion is detected and we are not already in listening mode, enter listening mode
-    if (!motion && !pirTestListening) {
-        pirTestListening = true;
-        pirWasActive = false;
-
-        telegramBot.sendMessage("PIR test: listening...");
-        Serial.println("[PIR TEST] Listening...");
-    }
-
-    // If motion is detected and we were not already active, send a message and enter active state
-    if (motion && !pirWasActive) {
-        pirWasActive = true;
-        pirTestListening = false;
-
-        telegramBot.sendMessage("PIR motion detected.");
-        Serial.println("[PIR TEST] Motion detected.");
-    }
-}
-
-void resetPirSensorTest() {
-    pirTestStarted = false;
-    pirTestListening = false;
-    pirWasActive = false;
-    pirSensor.reset();
 }
 
 void runSilentMode() {
-    static bool pirWasActive = false;
+    telegramBot.sendMessage("Starting silent automatic mode.\n"
+                            "The feeder will send a photo only when motion is detected by the PIR sensor.\n\n"
+                            "Waiting for birds to arrive...");
 
-    if (!pirSensor.isWarmedUp()) {
-        return;
-    }
+    bool pirWasActive = false;
+    unsigned long lastCaptureTime = 0;
 
-    bool motionDetected = pirSensor.isMotionDetected();
+    // Main loop
+    while (true){
+        // Check for stop
+        TelegramCommand lastMessage = telegramBot.handleMessages();
+        if (lastMessage == TelegramCommand::Stop) {
+            telegramBot.sendMessage("Stopping automatic silent mode...");
+            mode = "None";
+            break;
+        } else if (lastMessage == TelegramCommand::Help) helpMessage();
 
-    // React only on transition: idle -> motion
-    if (motionDetected && !pirWasActive) {
-        Serial.println("[SILENT MODE] PIR motion detected.");
+        // Get PIR state
+        bool motion = pirSensor.isMotionDetected();
+        
+        // React to new motion
+        if (motion && !pirWasActive) {
+            const unsigned long now = millis();
 
-        if (pirSensor.isReadyForCapture()) {
-            telegramBot.sendMessage(
-                "Motion detected near the feeder.\n"
-                "Taking photo..."
-            );
+            if (lastCaptureTime == 0 || now - lastCaptureTime >= PIR_CAPTURE_COOLDOWN) {
+                Serial.println("[SILENT MODE] Motion detected.");
 
-            bool sent = captureAndSendPhoto();
+                telegramBot.sendMessage(
+                    "Motion detected near the feeder.\n"
+                    "Taking photo..."
+                );
 
-            // Mark capture attempt anyway to avoid repeated triggering
-            // if PIR output stays HIGH for a long time.
-            pirSensor.markCaptureDone();
+                bool sent = captureAndSendPhoto();
 
-            if (sent) {
-                Serial.println("[SILENT MODE] Photo sent.");
+                lastCaptureTime = millis();
+
+                if (sent) {
+                    Serial.println("[SILENT MODE] Photo sent.");
+                } else {
+                    Serial.println("[SILENT MODE] Photo sending failed.");
+                }
             } else {
-                Serial.println("[SILENT MODE] Photo sending failed.");
+                Serial.println("[SILENT MODE] Motion ignored due to cooldown.");
             }
         }
-    }
 
-    // Update state for edge detection
-    pirWasActive = motionDetected;
+        // Update PIR state memory
+        pirWasActive = motion;
+
+        delay(PIR_DEBOUNCE_TIME);
+    }
 }
 
 // temporary function - not tested

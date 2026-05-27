@@ -1,7 +1,6 @@
-// Src/sensors_n_actuators/pir_sensor/pir_sensor.cpp
+// Src/sensors_n_actuators/pir_sensor/pir_sensoe.cpp
 
 #include "pir_sensor.h"
-#include "config.h"
 
 PIRSensor::PIRSensor(uint8_t sensorPin, uint8_t sensorActiveLevel)
     : pin(sensorPin), activeLevel(sensorActiveLevel) {}
@@ -9,68 +8,25 @@ PIRSensor::PIRSensor(uint8_t sensorPin, uint8_t sensorActiveLevel)
 void PIRSensor::begin() {
     pinMode(pin, INPUT);
 
-    warmupStartTime = millis();
-    lastStateChangeTime = millis();
-    lastCaptureTime = 0;
-
-    lastRawState = isMotionRaw();
-    stableMotionState = lastRawState;
-
     Serial.print("[PIR] Initialized on GPIO ");
     Serial.println(pin);
 
-    Serial.print("[PIR] Warmup time: ");
-    Serial.print(PIR_WARMUP_TIME);
-    Serial.println(" ms");
+    Serial.print("[PIR] Active level: ");
+    Serial.println(activeLevel);
 }
 
-bool PIRSensor::isWarmedUp() const {
-    return millis() - warmupStartTime >= PIR_WARMUP_TIME;
+bool PIRSensor::readDigital() const {
+    return digitalRead(pin) == HIGH;
 }
 
-bool PIRSensor::isMotionRaw() const {
+bool PIRSensor::isMotionDetected() const {
     return digitalRead(pin) == activeLevel;
 }
 
-bool PIRSensor::isMotionDetected() {
-    const bool currentRawState = isMotionRaw();
-    const unsigned long now = millis();
-
-    if (currentRawState != lastRawState) {
-        lastRawState = currentRawState;
-        lastStateChangeTime = now;
-    }
-
-    if (now - lastStateChangeTime >= PIR_DEBOUNCE_TIME) {
-        stableMotionState = currentRawState;
-    }
-
-    return stableMotionState;
+uint8_t PIRSensor::getPin() const {
+    return pin;
 }
 
-bool PIRSensor::isReadyForCapture() {
-    if (!isWarmedUp()) {
-        return false;
-    }
-
-    if (!isMotionDetected()) {
-        return false;
-    }
-
-    if (lastCaptureTime == 0) {
-        return true;
-    }
-
-    return millis() - lastCaptureTime >= PIR_CAPTURE_COOLDOWN;
-}
-
-void PIRSensor::markCaptureDone() {
-    lastCaptureTime = millis();
-}
-
-void PIRSensor::reset() {
-    stableMotionState = false;
-    lastRawState = isMotionRaw();
-    lastStateChangeTime = millis();
-    lastCaptureTime = millis();
+uint8_t PIRSensor::getActiveLevel() const {
+    return activeLevel;
 }
